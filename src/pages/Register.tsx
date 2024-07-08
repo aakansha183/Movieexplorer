@@ -1,5 +1,4 @@
-import React from 'react';
-import { useFormik } from 'formik';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -16,29 +15,54 @@ const Register: React.FC = () => {
     const { register } = useAuth();
     const navigate = useNavigate();
 
-    const formik = useFormik({
-        initialValues: {
-            username: '',
-            password: '',
-            email: '',
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values) => {
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+        email: '',
+    });
+
+    const [errors, setErrors] = useState({
+        username: '',
+        password: '',
+        email: '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            await validationSchema.validate(formData, { abortEarly: false });
             const newUser: User = {
                 id: Date.now().toString(),
-                username: values.username,
-                password: values.password,
-                email: values.email,
+                username: formData.username,
+                password: formData.password,
+                email: formData.email,
             };
 
             register(newUser);
             navigate('/login');
-        },
-    });
+        } catch (error) {
+            if (error instanceof yup.ValidationError) {
+                const newErrors: any = {};
+                error.inner.forEach(err => {
+                    newErrors[err.path as keyof typeof formData] = err.message;
+                });
+                setErrors(newErrors);
+            }
+        }
+    };
 
     return (
         <Container maxWidth="sm">
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <Typography variant="h4" align="center" gutterBottom>
                     Register
                 </Typography>
@@ -49,11 +73,10 @@ const Register: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.username && Boolean(formik.errors.username)}
-                    helperText={formik.touched.username && formik.errors.username}
+                    value={formData.username}
+                    onChange={handleChange}
+                    error={Boolean(errors.username)}
+                    helperText={errors.username}
                 />
                 <TextField
                     id="password"
@@ -63,11 +86,10 @@ const Register: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password}
                 />
                 <TextField
                     id="email"
@@ -76,11 +98,10 @@ const Register: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={Boolean(errors.email)}
+                    helperText={errors.email}
                 />
                 <Button
                     type="submit"

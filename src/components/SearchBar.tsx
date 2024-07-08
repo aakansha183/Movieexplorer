@@ -1,6 +1,6 @@
-// components/SearchBar.tsx
 import React, { useState } from 'react';
 import { TextField, Container } from '@mui/material';
+import './SearchBar.css';
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
@@ -15,7 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     };
 
     return (
-        <Container maxWidth="sm" style={{ marginTop: '2rem' }}>
+        <Container maxWidth="sm" className="search-container">
             <TextField
                 id="search"
                 label="Search Movie"
@@ -23,6 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
                 fullWidth
                 value={query}
                 onChange={handleSearchChange}
+                className="search-input" 
             />
         </Container>
     );

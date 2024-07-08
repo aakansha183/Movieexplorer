@@ -3,14 +3,16 @@ import { useDispatch } from 'react-redux';
 import { Movie } from '../types/Movie';
 import { addToFavorites, removeFromFavorites } from '../redux/slices/movieSlice';
 import { Link } from 'react-router-dom'; 
+import { Button, Card, CardActions, CardContent, Typography, Grid } from '@mui/material'; 
 import './MovieCard.css'; 
 
 interface MovieCardProps {
     movie: Movie;
     isFavorite: boolean;
+    onRemoveFromFavorites?: () => void; 
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite, onRemoveFromFavorites }) => {
     const dispatch = useDispatch();
 
     const handleFavoriteClick = () => {
@@ -22,30 +24,51 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
     };
 
     return (
-        <div className="movie-card">
-            <div className="poster-container">
-                <img src={movie.Poster} alt={movie.Title} className="movie-poster" />
-            </div>
-            <div className="details-container">
-                <h2>{movie.Title}</h2>
-                <p>{movie.Plot}</p>
-                <p>Director: {movie.Director}</p>
-                <p>Actors: {movie.Actors}</p>
-                <p>Genre: {movie.Genre}</p>
-                <p>Released: {movie.Released}</p>
-                <p>Runtime: {movie.Runtime}</p>
-                
-                <Link to={`/movie/${movie.imdbID}`} className="movie-detail-button">
-                    Show Movie Details
-                </Link>
-                <button
-                    className={`favorite-button ${isFavorite ? 'remove' : ''}`}
-                    onClick={handleFavoriteClick}
-                >
-                    {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-                </button>
-            </div>
-        </div>
+        <Card className="movie-card">
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={4}>
+                    <div className="poster-container">
+                        <img src={movie.Poster} alt={movie.Title} className="movie-poster" />
+                    </div>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                    <CardContent className="details-container">
+                        <Typography variant="h5" component="h2">
+                            {movie.Title}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            {movie.Plot}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Director: {movie.Director}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Actors: {movie.Actors}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Genre: {movie.Genre}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Released: {movie.Released}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Runtime: {movie.Runtime}
+                        </Typography>
+                        <Link to={`/movie/${movie.imdbID}`} className="movie-detail-button">
+                            Show Movie Details
+                        </Link>
+                        <CardActions>
+                            <Button
+                                className="favorite-button"
+                                onClick={handleFavoriteClick}
+                            >
+                                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                            </Button>
+                        </CardActions>
+                    </CardContent>
+                </Grid>
+            </Grid>
+        </Card>
     );
 };
 

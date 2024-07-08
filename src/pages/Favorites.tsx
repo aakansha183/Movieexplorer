@@ -1,13 +1,12 @@
-// pages/Favorites.tsx
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import MovieCard from '../components/MovieCard';
+import MovieList from '../components/MovieList';
 import SearchBar from '../components/SearchBar';
+import useFavorites from '../hooks/useFavorites';
+import { Movie } from '../types/Movie';
 
 const Favorites: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const favorites = useSelector((state: RootState) => state.movies.favorites);
+    const { favorites, addToFavorites, removeFromFavorites } = useFavorites();
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);
@@ -22,13 +21,11 @@ const Favorites: React.FC = () => {
             <SearchBar onSearch={handleSearch} />
             <h1>Favorites</h1>
             {filteredFavorites.length > 0 ? (
-                filteredFavorites.map(favorite => (
-                    <MovieCard
-                        key={favorite.imdbID}
-                        movie={favorite}
-                        isFavorite={true}
-                    />
-                ))
+                <MovieList 
+                    movies={filteredFavorites} 
+                    favorites={favorites.map(favorite => favorite.imdbID)}
+                    onRemoveFromFavorites={removeFromFavorites} 
+                />
             ) : (
                 <p>No movies found</p>
             )}

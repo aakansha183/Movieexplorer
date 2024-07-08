@@ -1,0 +1,17 @@
+
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+  
+  .search-input {
+    width: 300px;
+  }
+  
+  @media (max-width: 600px) {
+    .search-input {
+      width: 200px;
+    }
+  }
+  

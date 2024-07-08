@@ -12,7 +12,6 @@ const Home: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const movies = useSelector((state: RootState) => state.movies.movies);
 
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -41,8 +40,8 @@ const Home: React.FC = () => {
 
     return (
         <div>
+            <h1 style={{ marginBottom: '0.5rem' }}>Home</h1> 
             <SearchBar onSearch={handleSearch} />
-            <h1>Home</h1>
             <MovieList movies={filteredMovies} />
         </div>
     );

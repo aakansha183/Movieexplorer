@@ -1,7 +1,7 @@
-export interface Comment {
+export interface Rating {
+    id: string;
     movieId: string;
-    id:string;
     userId: string;
-    text: string;
     username: string;
+    rating: number;
 }

@@ -1,5 +1,3 @@
-// utils.ts
-
 export const fetchMoviesFromJSON = async (): Promise<any> => {
     try {
         const data = await import('../src/json/movies.json');

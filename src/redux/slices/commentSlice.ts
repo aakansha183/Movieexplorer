@@ -1,11 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface Comment {
-    id: string;
-    movieId: string;
-    userId: string;
-    text: string;
-}
+import { Comment } from '../../types/Comment';
 
 interface CommentState {
     comments: Comment[];
@@ -22,8 +16,12 @@ const commentSlice = createSlice({
         addComment: (state, action: PayloadAction<Comment>) => {
             state.comments.push(action.payload);
         },
+        setComments: (state, action: PayloadAction<Comment[]>) => {
+            state.comments = action.payload;
+        },
     },
 });
 
-export const { addComment } = commentSlice.actions;
+export const { addComment, setComments } = commentSlice.actions;
 export default commentSlice.reducer;
+
