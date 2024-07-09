@@ -3,10 +3,13 @@ import MovieList from '../components/MovieList';
 import SearchBar from '../components/SearchBar';
 import useFavorites from '../hooks/useFavorites';
 import { Movie } from '../types/Movie';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const Favorites: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { favorites, addToFavorites, removeFromFavorites } = useFavorites();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { favorites, addToFavorites, removeFromFavorites } = useFavorites(currentUser);
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);

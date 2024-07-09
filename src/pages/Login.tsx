@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Grid, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
 import * as yup from 'yup';
 import useAuth from '../hooks/useAuth';
 
@@ -14,30 +13,55 @@ const Login: React.FC = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [touched, setTouched] = useState<{ username: boolean, password: boolean }>({ username: false, password: false });
+    const [errors, setErrors] = useState<{ username?: string, password?: string }>({});
 
-    const formik = useFormik({
-        initialValues: {
-            username: '',
-            password: '',
-        },
-        validationSchema: validationSchema,
-        onSubmit: async (values) => {
-            try {
-                const success = await login(values.username, values.password);
-                if (success) {
-                    navigate('/');
-                } else {
-                    setError('Invalid username or password');
-                }
-            } catch (error: any) {
-                setError(error.message || 'An error occurred during login.');
+    const handleBlur = (field: 'username' | 'password') => {
+        setTouched({ ...touched, [field]: true });
+        validateField(field);
+    };
+
+    const handleChange = (field: 'username' | 'password', value: string) => {
+        if (field === 'username') setUsername(value);
+        if (field === 'password') setPassword(value);
+        validateField(field, value);
+    };
+
+    const validateField = (field: 'username' | 'password', value?: string) => {
+        let fieldErrors: any = { ...errors };
+        try {
+            validationSchema.validateSyncAt(field, { [field]: value ?? (field === 'username' ? username : password) });
+            delete fieldErrors[field];
+        } catch (err: any) {
+            fieldErrors[field] = err.message;
+        }
+        setErrors(fieldErrors);
+    };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        try {
+            const isValid = await validationSchema.isValid({ username, password });
+            if (!isValid) {
+                setTouched({ username: true, password: true });
+                return;
             }
-        },
-    });
+            const success = await login(username, password);
+            if (success) {
+                navigate('/');
+            } else {
+                setError('Invalid username or password');
+            }
+        } catch (error: any) {
+            setError(error.message || 'An error occurred during login.');
+        }
+    };
 
     return (
         <Container maxWidth="sm">
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <Typography variant="h4" align="center" gutterBottom>
                     Login
                 </Typography>
@@ -48,11 +72,11 @@ const Login: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.username && Boolean(formik.errors.username)}
-                    helperText={formik.touched.username && formik.errors.username}
+                    value={username}
+                    onChange={(e) => handleChange('username', e.target.value)}
+                    onBlur={() => handleBlur('username')}
+                    error={touched.username && Boolean(errors.username)}
+                    helperText={touched.username && errors.username}
                 />
                 <TextField
                     id="password"
@@ -62,11 +86,11 @@ const Login: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
+                    value={password}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                    onBlur={() => handleBlur('password')}
+                    error={touched.password && Boolean(errors.password)}
+                    helperText={touched.password && errors.password}
                 />
                 <Button
                     type="submit"
@@ -96,3 +120,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+

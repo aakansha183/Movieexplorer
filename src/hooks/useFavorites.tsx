@@ -4,8 +4,9 @@ import localforage from 'localforage';
 import { RootState } from '../redux/store';
 import { Movie } from '../types/Movie';
 import { addToFavorites, removeFromFavorites } from '../redux/slices/movieSlice';
+import { User } from '../types/User';
 
-const useFavorites = () => {
+const useFavorites = (currentUser: User | null) => {
     const [persistedFavorites, setPersistedFavorites] = useState<Movie[]>([]);
     const favorites = useSelector((state: RootState) => state.movies.favorites);
     const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const useFavorites = () => {
         loadFavoritesFromLocalForage();
     }, []);
 
- 
+    
     useEffect(() => {
         const saveFavoritesToLocalForage = async () => {
             try {
@@ -40,12 +41,22 @@ const useFavorites = () => {
         saveFavoritesToLocalForage();
     }, [favorites]);
 
+   
     const addToFavoritesHandler = (movie: Movie) => {
-        dispatch(addToFavorites(movie));
+        if (currentUser) {
+            dispatch(addToFavorites(movie));
+        } else {
+            alert('Please login to add items to favorites.');
+        }
     };
 
+    
     const removeFromFavoritesHandler = (movie: Movie) => {
-        dispatch(removeFromFavorites(movie));
+        if (currentUser) {
+            dispatch(removeFromFavorites(movie));
+        } else {
+            alert('Please login to remove items from favorites.');
+        }
     };
 
     return {
