@@ -1,8 +1,10 @@
 
 .search-container {
+    margin-bottom: 50px;
     display: flex;
     align-items: center;
     margin-left: auto;
+
   }
   
   .search-input {
@@ -14,4 +16,5 @@
       width: 200px;
     }
   }
+
   

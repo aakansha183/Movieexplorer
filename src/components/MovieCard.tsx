@@ -12,7 +12,7 @@ interface MovieCardProps {
     onRemoveFromFavorites?: () => void; 
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite, onRemoveFromFavorites }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
     const dispatch = useDispatch();
 
     const handleFavoriteClick = () => {

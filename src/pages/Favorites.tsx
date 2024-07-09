@@ -20,8 +20,9 @@ const Favorites: React.FC = () => {
 
     return (
         <div>
-            <SearchBar onSearch={handleSearch} />
+            
             <h1>Favorites</h1>
+            <SearchBar onSearch={handleSearch} />
             {filteredFavorites.length > 0 ? (
                 <MovieList 
                     movies={filteredFavorites} 
