@@ -11,6 +11,7 @@ const validationSchema = yup.object({
     email: yup.string().email('Enter a valid email').required('Email is required'),
 });
 
+//use React hook form instead
 const Register: React.FC = () => {
     const { register } = useAuth();
     const navigate = useNavigate();
