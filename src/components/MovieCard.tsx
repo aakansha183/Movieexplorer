@@ -1,7 +1,9 @@
+// src/components/MovieCard.tsx
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Movie } from '../types/Movie';
 import { addToFavorites, removeFromFavorites } from '../redux/slices/movieSlice';
+import { RootState } from '../redux/store';
 import { Link } from 'react-router-dom'; 
 import { Button, Card, CardActions, CardContent, Typography, Grid } from '@mui/material'; 
 import './MovieCard.css'; 
@@ -14,6 +16,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
     const dispatch = useDispatch();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
 
     const handleFavoriteClick = () => {
         if (isFavorite) {
@@ -58,12 +61,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
                             Show Movie Details
                         </Link>
                         <CardActions>
-                            <Button
-                                className="favorite-button"
-                                onClick={handleFavoriteClick}
-                            >
-                                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-                            </Button>
+                            {currentUser && (
+                                <Button
+                                    className="favorite-button"
+                                    onClick={handleFavoriteClick}
+                                >
+                                    {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                                </Button>
+                            )}
                         </CardActions>
                     </CardContent>
                 </Grid>
@@ -73,3 +78,4 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
 };
 
 export default MovieCard;
+

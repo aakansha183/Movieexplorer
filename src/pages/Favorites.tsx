@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MovieList from '../components/MovieList';
-import SearchBar from '../components/SearchBar';
 import useFavorites from '../hooks/useFavorites';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
-const Favorites: React.FC = () => {
-    const [searchQuery, setSearchQuery] = useState('');
+interface FavoritesProps {
+    searchQuery: string;
+}
+
+const Favorites: React.FC<FavoritesProps> = ({ searchQuery }) => {
     const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const { favorites, removeFromFavorites } = useFavorites(currentUser);
-
-    const handleSearch = (query: string) => {
-        setSearchQuery(query);
-    };
 
     const filteredFavorites = favorites.filter(favorite =>
         favorite.Title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -20,9 +18,7 @@ const Favorites: React.FC = () => {
 
     return (
         <div>
-            
             <h1>Favorites</h1>
-            <SearchBar onSearch={handleSearch} />
             {filteredFavorites.length > 0 ? (
                 <MovieList 
                     movies={filteredFavorites} 

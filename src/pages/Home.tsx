@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMovies } from '../redux/slices/movieSlice';
 import MovieList from '../components/MovieList';
-import SearchBar from '../components/SearchBar';
 import { RootState } from '../redux/store';
 import { fetchMoviesFromJSON } from '../utils';
 
-const Home: React.FC = () => {
+interface HomeProps {
+    searchQuery: string;
+}
+
+const Home: React.FC<HomeProps> = ({ searchQuery }) => {
     const dispatch = useDispatch();
-    const [searchQuery, setSearchQuery] = useState('');
     const [error, setError] = useState<string | null>(null);
     const movies = useSelector((state: RootState) => state.movies.movies);
 
@@ -26,10 +28,6 @@ const Home: React.FC = () => {
         fetchData();
     }, [dispatch]);
 
-    const handleSearch = (query: string) => {
-        setSearchQuery(query);
-    };
-
     const filteredMovies = movies.filter(movie =>
         movie.Title.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -40,8 +38,7 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            <h1 style={{ marginBottom: '0.5rem' }}>Home</h1> 
-            <SearchBar onSearch={handleSearch} />
+            <h1 style={{ marginBottom: '0.5rem' }}></h1>
             <MovieList movies={filteredMovies} />
         </div>
     );
