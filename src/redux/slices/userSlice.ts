@@ -8,9 +8,14 @@ interface UserState {
     currentUser: User | null;
 }
 
+const getUserFromLocalStorage = (): User | null => {
+    const storedUser = localStorage.getItem('currentUser');
+    return storedUser ? JSON.parse(storedUser) : null;
+};
+
 const initialState: UserState = {
     users: [],
-    currentUser: null,
+    currentUser: getUserFromLocalStorage(),
 };
 
 const userSlice = createSlice({
@@ -22,17 +27,25 @@ const userSlice = createSlice({
         },
         setUser(state, action: PayloadAction<User | null>) {
             state.currentUser = action.payload;
+            if (action.payload) {
+                localStorage.setItem('currentUser', JSON.stringify(action.payload));
+            } else {
+                localStorage.removeItem('currentUser');
+            }
         },
         logout(state) {
             state.currentUser = null;
+            localStorage.removeItem('currentUser');
         },
     },
     extraReducers: (builder) => {
         builder.addCase(clearFavorites, (state) => {
             state.currentUser = null;
+            localStorage.removeItem('currentUser');
         });
     }
 });
 
 export const { registerUser, setUser, logout } = userSlice.actions;
 export default userSlice.reducer;
+

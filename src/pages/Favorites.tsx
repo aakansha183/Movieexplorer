@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+
 import MovieList from '../components/MovieList';
 import useFavorites from '../hooks/useFavorites';
 import { useSelector } from 'react-redux';

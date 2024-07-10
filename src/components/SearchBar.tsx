@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Container } from '@mui/material';
 import './SearchBar.css';
+import debounce from 'lodash.debounce';
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
@@ -9,9 +10,21 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     const [query, setQuery] = useState('');
 
+    const debouncedOnSearch = debounce((searchQuery: string) => {
+        onSearch(searchQuery);
+    }, 1000);
+
+    useEffect(() => {
+        debouncedOnSearch(query);
+
+      
+        return () => {
+            debouncedOnSearch.cancel();
+        };
+    }, [query, debouncedOnSearch]);
+
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
-        onSearch(event.target.value);
     };
 
     return (
@@ -23,10 +36,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
                 fullWidth
                 value={query}
                 onChange={handleSearchChange}
-                className="search-input" 
+                className="search-input"
             />
         </Container>
     );
 };
 
 export default SearchBar;
+

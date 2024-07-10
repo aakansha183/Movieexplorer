@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Grid, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -18,14 +18,27 @@ const Login: React.FC = () => {
     const [touched, setTouched] = useState<{ username: boolean, password: boolean }>({ username: false, password: false });
     const [errors, setErrors] = useState<{ username?: string, password?: string }>({});
 
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username') || '';
+        const storedPassword = localStorage.getItem('password') || '';
+        setUsername(storedUsername);
+        setPassword(storedPassword);
+    }, []);
+
     const handleBlur = (field: 'username' | 'password') => {
         setTouched({ ...touched, [field]: true });
         validateField(field);
     };
 
     const handleChange = (field: 'username' | 'password', value: string) => {
-        if (field === 'username') setUsername(value);
-        if (field === 'password') setPassword(value);
+        if (field === 'username') {
+            setUsername(value);
+            localStorage.setItem('username', value); 
+        }
+        if (field === 'password') {
+            setPassword(value);
+            localStorage.setItem('password', value); 
+        }
         validateField(field, value);
     };
 
