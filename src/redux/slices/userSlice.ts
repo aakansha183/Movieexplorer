@@ -1,4 +1,3 @@
-// src/redux/slices/userSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { clearFavorites } from './movieSlice';
@@ -31,17 +30,23 @@ const userSlice = createSlice({
                 localStorage.setItem('currentUser', JSON.stringify(action.payload));
             } else {
                 localStorage.removeItem('currentUser');
+                localStorage.removeItem('username');
+                localStorage.removeItem('password');
             }
         },
         logout(state) {
             state.currentUser = null;
             localStorage.removeItem('currentUser');
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
         },
     },
     extraReducers: (builder) => {
         builder.addCase(clearFavorites, (state) => {
             state.currentUser = null;
             localStorage.removeItem('currentUser');
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
         });
     }
 });

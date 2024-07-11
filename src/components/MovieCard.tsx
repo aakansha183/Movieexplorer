@@ -79,3 +79,4 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite }) => {
 
 export default MovieCard;
 
+

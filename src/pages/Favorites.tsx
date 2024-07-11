@@ -1,8 +1,8 @@
-
-import MovieList from '../components/MovieList';
-import useFavorites from '../hooks/useFavorites';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import MovieList from '../components/MovieList';
+import useFavorites from '../hooks/useFavorites';
 
 interface FavoritesProps {
     searchQuery: string;
@@ -33,3 +33,4 @@ const Favorites: React.FC<FavoritesProps> = ({ searchQuery }) => {
 };
 
 export default Favorites;
+
